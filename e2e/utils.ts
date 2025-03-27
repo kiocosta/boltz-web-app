@@ -80,6 +80,9 @@ export const getElementsWalletTx = (txId: string): Promise<string> =>
 export const payInvoiceLnd = (invoice: string): Promise<string> =>
     execCommand(`lncli-sim 1 payinvoice -f ${invoice}`);
 
+export const decodeLiquidRawTransaction = (tx: string): Promise<string> =>
+    execCommand(`elements-cli-sim-client decoderawtransaction "${tx}"`);
+
 export const generateInvoiceLnd = async (amount: number): Promise<string> => {
     return JSON.parse(
         await execCommand(`lncli-sim 1 addinvoice --amt ${amount}`),
@@ -116,6 +119,10 @@ export const waitForNodesToSync = async (): Promise<void> => {
 
 export const addReferral = (name: string): Promise<string> =>
     boltzCli(`addreferral ${name} 0`);
+
+export const setFailedToPay = async (swapId: string): Promise<void> => {
+    await boltzCli(`setswapstatus ${swapId} invoice.failedToPay`);
+};
 
 export const getReferrals = async (): Promise<Record<string, unknown>> =>
     JSON.parse(await boltzCli(`getreferrals`)) as Record<string, unknown>;
