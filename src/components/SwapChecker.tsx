@@ -173,6 +173,7 @@ export const SwapChecker = () => {
         externalBroadcast,
         t,
         deriveKey,
+        setPendingSwaps,
     } = useGlobalContext();
 
     let ws: BoltzWebSocket | undefined = undefined;
@@ -193,6 +194,13 @@ export const SwapChecker = () => {
             }
         }
         if (data.status) {
+            if (
+                [SwapType.Chain, SwapType.Reverse].includes(currentSwap.type) &&
+                [...Object.values(swapStatusPending)].includes(data.status) &&
+                data.status !== swapStatusPending.SwapCreated
+            ) {
+                setPendingSwaps((pendingSwaps) => [...pendingSwaps, data.id]);
+            }
             await updateSwapStatus(currentSwap.id, data.status);
         }
     };
@@ -267,6 +275,7 @@ export const SwapChecker = () => {
                 const claimedSwap = await getSwap(res.id);
                 claimedSwap.claimTx = res.claimTx;
                 await setSwapStorage(claimedSwap);
+                setPendingSwaps((pendingSwaps) => pendingSwaps.filter((id: string) => id !== res.id));
 
                 if (claimedSwap.id === swap().id) {
                     setSwap(claimedSwap);

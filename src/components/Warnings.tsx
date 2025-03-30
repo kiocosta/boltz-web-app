@@ -5,7 +5,8 @@ import { config } from "../config";
 import { useGlobalContext } from "../context/Global";
 
 const Warnings = () => {
-    const { t, online, fetchPairs, wasmSupported } = useGlobalContext();
+    const { t, online, fetchPairs, wasmSupported, pendingSwaps } =
+        useGlobalContext();
 
     return (
         <div>
@@ -15,6 +16,11 @@ const Warnings = () => {
                     <span class="icon-reload" onClick={() => fetchPairs()}>
                         <img src={reload_svg} />
                     </span>
+                </div>
+            </Show>
+            <Show when={pendingSwaps.length > 0}>
+                <div class="banner">
+                    ⚠ {t("pending_swaps", { amount: pendingSwaps.length })}
                 </div>
             </Show>
             <Show when={!wasmSupported()}>

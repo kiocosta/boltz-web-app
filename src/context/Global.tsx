@@ -14,6 +14,7 @@ import {
     useContext,
 } from "solid-js";
 import type { JSX } from "solid-js";
+import { SetStoreFunction, createStore } from "solid-js/store";
 
 import { config } from "../config";
 import { Denomination } from "../consts/Enums";
@@ -102,6 +103,8 @@ export type GlobalContextType = {
     deleteSwap: (id: string) => Promise<void>;
     clearSwaps: () => Promise<void>;
     updateSwapStatus: (id: string, newStatus: string) => Promise<boolean>;
+    pendingSwaps: string[];
+    setPendingSwaps: SetStoreFunction<string[]>;
 
     hardwareDerivationPath: Accessor<string>;
     setHardwareDerivationPath: Setter<string>;
@@ -159,6 +162,10 @@ const GlobalProvider = (props: { children: JSX.Element }) => {
     const [embedded, setEmbedded] = createSignal<boolean>(false);
 
     const [hideHero, setHideHero] = createSignal<boolean>(false);
+
+    const [pendingSwaps, setPendingSwaps] = createStore<
+        string[]
+    >([]);
 
     const [ref, setRef] = makePersisted(
         // eslint-disable-next-line solid/reactivity
@@ -474,6 +481,7 @@ const GlobalProvider = (props: { children: JSX.Element }) => {
                 setAudioNotification,
                 browserNotification,
                 setBrowserNotification,
+                pendingSwaps,
                 // functions
                 t,
                 notify,
@@ -487,6 +495,7 @@ const GlobalProvider = (props: { children: JSX.Element }) => {
                 deleteSwap,
                 getSwaps,
                 clearSwaps,
+                setPendingSwaps,
 
                 setRdns,
                 getRdnsForAddress,

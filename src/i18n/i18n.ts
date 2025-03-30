@@ -251,6 +251,8 @@ const dict = {
         back: "Back",
         next: "Next",
         pagination_info: "Page {{ start }} of {{ end }}",
+        pending_swaps:
+            "You have {{ amount }} pending swap(s)! Please, keep this page open to avoid failures.",
     },
     de: {
         language: "Deutsch",
